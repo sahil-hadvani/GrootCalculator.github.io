@@ -803,9 +803,18 @@
                         <input type="time" class="form-control" id="recordTime">
                     </div>
                 </div>
-                <button type="button" class="btn btn-add-remove btn-add w-100" id="exportCsvBtn">
-                    <i class="fas fa-download"></i> Download CSV
-                </button>
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-6 col-lg-6">
+                        <button type="button" class="btn btn-add-remove btn-add w-100" id="exportCsvBtn">
+                            <i class="fas fa-download"></i> Download CSV
+                        </button>
+                    </div>
+                    <div class="col-6 col-md-6 col-lg-6">
+                        <button type="button" class="btn btn-add-remove btn-add w-100 mt-2" id="captureScreenshotBtn">
+                            <i class="fas fa-camera"></i> Capture Screenshot
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -815,6 +824,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
     <script>
         let itemRowCounter = 0;
@@ -1149,6 +1159,29 @@
                 initProfitChart();
                 calcProfitLoss(); // Initial calculation
             }, 100);
+        });
+
+        $('#captureScreenshotBtn').on('click', function () {
+            const target = document.querySelector('.console') || document.body;
+
+            html2canvas(target, {
+                backgroundColor: null,
+                useCORS: true,
+                scale: window.devicePixelRatio || 2,
+                scrollX: 0,
+                scrollY: -window.scrollY
+            }).then(function (canvas) {
+                const link = document.createElement('a');
+                const now = new Date();
+                const pad = n => String(n).padStart(2, '0');
+                const fileName = `Groot_Pricing_${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}.png`;
+
+                link.href = canvas.toDataURL('image/png');
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
         });
     </script>
 </body>
