@@ -496,6 +496,35 @@
             .theme-trigger { width: 48px; height: 48px; font-size: 18px; }
             .console { max-width: 100%; }
         }
+
+        #profitChart:hover #chartCenter {
+            transform: translate(-50%, -50%) scale(1.1);
+            transition: transform 0.3s ease;
+        }
+        .profit-positive #profitChart { box-shadow: 0 0 30px rgba(52,211,153,0.5); }
+        .profit-negative #profitChart { box-shadow: 0 0 30px rgba(248,113,113,0.5); }
+
+        #profitLegend {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+        #profitLegend span {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 16px;
+        }
+        #profitLegend span:last-child {
+            margin-right: 0;
+        }
+        #profitLegend .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
     </style>
 </head>
 <body data-theme="dark">
@@ -543,15 +572,15 @@
             </div>
             <div class="section-body">
                 <div class="row g-3">
-                    <div class="col-lg-4">
+                    <div class="col-4 col-md-4 col-lg-4">
                         <label class="form-label" for="rate">Rate (₹)</label>
                         <input type="number" class="form-control" id="rate" placeholder="Enter rate" min="0" step="0.1">
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-4 col-md-4 col-lg-4">
                         <label class="form-label" for="baseAmount">Base Amount</label>
                         <input type="number" class="form-control" id="baseAmount" readonly>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-4 col-md-4 col-lg-4">
                         <label class="form-label" for="finalAmount">Final Amount</label>
                         <input type="number" class="form-control" id="finalAmount" readonly>
                     </div>
@@ -670,47 +699,83 @@
             </div>
             <div class="section-body">
                 <div class="row g-4 mb-4">
-                    <div class="col-lg-6">
+                    <div class="col-6 col-md-6 col-lg-6">
                         <label class="form-label" for="totalCostInput">Your Total Cost (₹)</label>
                         <input type="number" class="form-control" id="totalCostInput" placeholder="Auto: Selling - Base Amount" readonly>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-6 col-md-6 col-lg-6">
                         <label class="form-label" for="discountInput">Additional Discount (₹)</label>
                         <input type="number" class="form-control" id="discountInput" placeholder="Enter Discount value in (₹)" min="0" step="0.1" value="0">
                     </div>
                 </div>
-                <div class="row g-3 profit-metrics">
-                    <div class="col-lg-3">
-                        <div class="profit-field">
-                            <label class="form-label" for="showBaseTotal">Base Amount Total</label>
-                            <input type="number" class="form-control" id="showBaseTotal" readonly>
+                <div class="profit-metrics">
+                    <div class="row">
+                        <div class="col-4 col-md-4 col-xxl-4">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-12 col-lg-12">
+                                    <div class="profit-field">
+                                        <label class="form-label" for="showBaseTotal">Base Amount Total</label>
+                                        <input type="number" class="form-control" id="showBaseTotal" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-12 col-lg-12">
+                                    <div class="profit-field">
+                                        <label class="form-label" for="showTotalSell">Total Selling</label>
+                                        <input type="number" class="form-control" id="showTotalSell" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-12 col-lg-12">
+                                    <div class="profit-field" id="profitField">
+                                        <label class="form-label" for="discountedPrice">Discounted Price</label>
+                                        <input type="number" class="form-control" id="discountedPrice" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <div class="profit-field" id="percentField">
+                                        <label class="form-label" for="profitAmount">Profit/Loss (₹)</label>
+                                        <input type="number" class="form-control" id="profitAmount" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <label class="form-label" for="profitPercent">Profit/Loss (%)</label>
+                                    <input type="text" class="form-control" id="profitPercent" readonly />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="profit-field">
-                            <label class="form-label" for="showTotalSell">Total Selling</label>
-                            <input type="number" class="form-control" id="showTotalSell" readonly>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="profit-field" id="profitField">
-                            <label class="form-label" for="discountedPrice">Discounted Price</label>
-                            <input type="number" class="form-control" id="discountedPrice" readonly>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="profit-field" id="percentField">
-                            <label class="form-label" for="profitAmount">Profit/Loss (₹)</label>
-                            <input type="number" class="form-control" id="profitAmount" readonly>
+                        <div class="col-8 col-md-8 col-xxl-8" style="position: relative;">
+                            <canvas id="profitChart" width="300" height="300" style="max-width: 100%; height: auto; border-radius: 16px"></canvas>
+                            <div id="chartCenter" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--text-main); font-weight: 800; font-size: 1.2rem; pointer-events: none;">
+                                <br/>
+
+                                <!-- Under the chartCenter div, add this legend -->
+                                <div id="profitLegend" style="margin-top: 16px; text-align: center; font-size: 0.8rem;">
+                                    <span style="display:inline-flex;align-items:center;margin-right:16px;">
+                                        <span style="width:10px;height:10px;border-radius:50%;background:rgba(52,211,153,0.9);display:inline-block;margin-right:6px;"></span>
+                                        <span style="color:rgba(52,211,153,1);font-weight:600;">Profit (Green)</span>
+                                    </span>
+                                    <br/>
+                                    <span style="display:inline-flex;align-items:center;">
+                                        <span style="width:10px;height:10px;border-radius:50%;background:rgba(248,113,113,0.9);display:inline-block;margin-right:6px;"></span>
+                                        <span style="color:rgba(248,113,113,1);font-weight:600;">Loss (Red)</span>
+                                    </span>
+                                </div>
+
+                                <br/>
+                                <div>
+                                    <span id="profitCenterValue">₹0</span>
+                                    |
+                                    <span id="profitCenterPercent">0%</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row g-3 mt-4">
+                <!-- <div class="row g-3 mt-2">
                     <div class="col-12 text-center">
                         <label class="form-label" for="profitPercent">Profit/Loss (%)</label>
                         <input type="text" class="form-control" id="profitPercent" readonly style="font-size: 2rem; font-weight: 800;">
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
 
@@ -725,15 +790,15 @@
             </div>
             <div class="section-body">
                 <div class="row g-3 mb-4">
-                    <div class="col-lg-4">
+                    <div class="col-4 col-md-4 col-lg-4">
                         <label class="form-label" for="partyName">Party Name</label>
                         <input type="text" class="form-control" id="partyName" placeholder="Enter party / customer name">
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-4 col-md-4 col-lg-4">
                         <label class="form-label" for="recordDate">Date</label>
                         <input type="date" class="form-control" id="recordDate">
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-4 col-md-4 col-lg-4">
                         <label class="form-label" for="recordTime">Time</label>
                         <input type="time" class="form-control" id="recordTime">
                     </div>
@@ -747,11 +812,16 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
     <script>
         let itemRowCounter = 0;
         let kgRowCounter = 0;
         let currentTheme = 'dark';
         let baseAmountTotal = 0;
+        let profitChart = null; // Move chart var to top
 
         // 4 THEME SYSTEM with Icons
         function setTheme(theme) {
@@ -762,7 +832,7 @@
             
             const themeNames = {
                 'dark': 'DARK THEME',
-                'light': 'LIGHT THEME',
+                'light': 'LIGHT THEME', 
                 'semi-dark': 'SEMI-DARK THEME',
                 'garden': '🌿 GARDEN THEME'
             };
@@ -776,20 +846,124 @@
             setTheme(theme);
         });
 
-        $(document).ready(function() {
-            const savedTheme = localStorage.getItem('preferredTheme') || 'dark';
-            setTheme(savedTheme);
+        // FIXED CHART FUNCTIONS
+        function initProfitChart() {
+            if (profitChart) profitChart.destroy(); // Clean up existing chart
             
-            const now = new Date();
-            const pad = n => String(n).padStart(2, '0');
-            $('#recordDate').val(`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`);
-            $('#recordTime').val(`${pad(now.getHours())}:${pad(now.getMinutes())}`);
+            const canvas = document.getElementById('profitChart');
+            if (!canvas) return;
             
-            addItemRow(); // Add first item row
-            calcSingleKG();
-        });
+            const ctx = canvas.getContext('2d');
+            profitChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [50, 50],
+                        backgroundColor: ['rgba(248,113,113,0.8)', 'rgba(52,211,153,0.8)'],
+                        borderColor: ['rgba(248,113,113,1)', 'rgba(52,211,153,1)'],
+                        borderWidth: 3,
+                        circumference: 180,
+                        rotation: 270
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    animation: {
+                        animateRotate: true,
+                        duration: 1200,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+        }
 
-        // SECTION 1: Rate Calculator (UNCHANGED)
+        function updateProfitChart(profit, baseAmountTotal, percent) {
+            if (!profitChart) return;
+            
+            const isPositive = profit >= 0;
+            const profitAbs = Math.abs(profit);
+            const total = baseAmountTotal || 100;
+            
+            profitChart.data.datasets[0].data = [isPositive ? profitAbs : total - profitAbs, isPositive ? total - profitAbs : profitAbs];
+            profitChart.data.datasets[0].backgroundColor = [
+                isPositive ? 'rgba(52,211,153,0.8)' : 'rgba(248,113,113,0.8)',
+                isPositive ? 'rgba(248,113,113,0.2)' : 'rgba(52,211,153,0.2)'
+            ];
+            profitChart.data.datasets[0].borderColor = [
+                isPositive ? 'rgba(52,211,153,1)' : 'rgba(248,113,113,1)',
+                'transparent'
+            ];
+            
+            profitChart.options.animation = {
+                animateRotate: true,
+                duration: 800,
+                easing: 'easeOutBack'
+            };
+            
+            profitChart.update('none');
+            
+            // Update center text with animation
+            const $centerValue = $('#profitCenterValue');
+            const $centerPercent = $('#profitCenterPercent');
+            $centerValue.text('₹' + Math.round(profitAbs)).css({
+                color: isPositive ? 'var(--success)' : 'var(--danger)'
+            });
+            $centerPercent.text(percent.toFixed(1) + '%').css({
+                color: isPositive ? 'var(--success)' : 'var(--danger)',
+                fontSize: '0.9rem'
+            });
+        }
+
+        // FIXED calcProfitLoss with proper selectors
+        function calcProfitLoss() {
+            const $grandTotal = $('#grandTotal');
+            const $discountInput = $('#discountInput');
+            const $kgGrandTotal = $('#kgGrandTotal');
+            const $showTotalSell = $('#showTotalSell');
+            const $discountedPrice = $('#discountedPrice');
+            const $profitAmount = $('#profitAmount');
+            const $profitPercent = $('#profitPercent');
+            const $profitField = $('#profitField');
+            const $percentField = $('#percentField');
+            
+            let sell = parseFloat($grandTotal.text()) || 0;
+            let discount = parseFloat($discountInput.val()) || 0;
+            let baseAmountTotalLocal = parseFloat($kgGrandTotal.text()) || 0;
+            
+            $showTotalSell.val(sell.toFixed(2));
+            let discountedPriceVal = sell - discount;
+            $discountedPrice.val(discountedPriceVal.toFixed(2));
+            
+            let profit = sell - discount - baseAmountTotalLocal;
+            $profitAmount.val(profit.toFixed(2));
+            
+            let percent = baseAmountTotalLocal > 0 ? (profit / baseAmountTotalLocal * 100) : 0;
+            $profitPercent.val(percent.toFixed(2));
+            
+            // Update chart
+            updateProfitChart(profit, baseAmountTotalLocal, percent);
+            
+            // Styling
+            $profitField.removeClass('profit-positive profit-negative');
+            $percentField.removeClass('profit-positive profit-negative');
+            if (profit >= 0) {
+                $profitField.addClass('profit-positive');
+                $percentField.addClass('profit-positive');
+                $profitPercent.css('color', 'var(--success)');
+            } else {
+                $profitField.addClass('profit-negative');
+                $percentField.addClass('profit-negative');
+                $profitPercent.css('color', 'var(--danger)');
+            }
+        }
+
+        // ALL OTHER SECTIONS (UNCHANGED but with proper selectors)
         $('#rate').on('input', function() {
             let rate = parseFloat(this.value) || 0;
             if (rate < 0) rate = 0;
@@ -799,7 +973,6 @@
             $('#finalAmount').val(final.toFixed(2));
         });
 
-        // SECTION 2: KG Pricing (UNCHANGED)
         function calcSingleKG() {
             let min = parseFloat($('#minKg').val()) || 0;
             let max = parseFloat($('#maxKg').val()) || 0;
@@ -851,7 +1024,6 @@
             if (kgRowCounter > 0) calcKgGrandTotal();
         });
 
-        // SECTION 3: Items Table (UNCHANGED)
         function addItemRow() {
             itemRowCounter++;
             let row = $(`
@@ -909,39 +1081,9 @@
             calcProfitLoss();
         }
 
-        function calcProfitLoss() {
-            let sell = parseFloat($('#grandTotal').text()) || 0;
-            let discount = parseFloat($('#discountInput').val()) || 0;
-            
-            $('#showTotalSell').val(sell.toFixed(2));
-            let discountedPrice = sell - discount;
-            $('#discountedPrice').val(discountedPrice.toFixed(2));
-            
-            let profit = (sell - discount - baseAmountTotal);
-            $('#profitAmount').val(profit.toFixed(2));
-            
-            let percent = (baseAmountTotal > 0 ? (profit / baseAmountTotal * 100) : 0);
-            $('#profitPercent').val(percent.toFixed(2) + '%');
-
-            let profitField = $('#profitField');
-            let percentField = $('#percentField');
-            profitField.removeClass('profit-positive profit-negative');
-            percentField.removeClass('profit-positive profit-negative');
-            
-            if (profit >= 0) {
-                profitField.addClass('profit-positive');
-                percentField.addClass('profit-positive');
-                $('#profitPercent').css('color', 'var(--success)');
-            } else {
-                profitField.addClass('profit-negative');
-                percentField.addClass('profit-negative');
-                $('#profitPercent').css('color', 'var(--danger)');
-            }
-        }
-
         $('#discountInput').on('input', calcProfitLoss);
 
-        // CSV EXPORT with FontAwesome Icon (UNCHANGED LOGIC)
+        // CSV EXPORT (UNCHANGED)
         $('#exportCsvBtn').on('click', function() {
             const partyName = ($('#partyName').val() || '').replace(/,/g, ' ');
             const dateVal = $('#recordDate').val() || '';
@@ -987,6 +1129,26 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        });
+
+        // SINGLE FIXED document.ready
+        $(document).ready(function() {
+            const savedTheme = localStorage.getItem('preferredTheme') || 'dark';
+            setTheme(savedTheme);
+            
+            const now = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            $('#recordDate').val(`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`);
+            $('#recordTime').val(`${pad(now.getHours())}:${pad(now.getMinutes())}`);
+            
+            addItemRow(); // Add first item row
+            calcSingleKG();
+            
+            // Initialize chart after DOM is ready
+            setTimeout(() => {
+                initProfitChart();
+                calcProfitLoss(); // Initial calculation
+            }, 100);
         });
     </script>
 </body>
