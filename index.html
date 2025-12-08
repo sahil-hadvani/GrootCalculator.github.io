@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg">
 <head>
     <meta charset="UTF-8">
-    <title>Perfect Pricing Console - SEMI-DARK THEME</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, shrink-to-fit=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="theme-color" content="#151529">
+
+    <title>Groot FRP Planters - Pricing Console</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
       :root {
@@ -249,8 +254,9 @@
           padding: 16px 18px;
       }
 
-      .profit-field input[readonly] {
-          background: #f3f4f6;
+      /* .profit-field input[readonly] */
+      input[readonly] {
+          background: #e9ebed;
       }
 
       /* SMALL SCREEN */
@@ -266,13 +272,17 @@
               gap: 6px;
           }
       }
+
+      .console {
+        max-width: 100%;
+      }
     </style>
 </head>
 <body>
     <div class="console">
         <!-- HEADER -->
         <div class="console-header">
-            <h1 class="console-title">Surface Pricing Console</h1>
+            <h1 class="console-title">Groot FRP Planters - Pricing Console</h1>
             <div class="status-live">
                 <div class="status-dot"></div>
                 🌟 SEMI-DARK THEME
@@ -290,15 +300,15 @@
             </div>
             <div class="section-body">
                 <div class="row g-3">
-                    <div class="col-lg-4">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <label class="form-label" for="rate">Rate (₹)</label>
                         <input type="number" class="form-control" id="rate" placeholder="Enter rate" min="0" step="0.1" />
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <label class="form-label" for="baseAmount">Base Amount (+10%)</label>
                         <input type="number" class="form-control" id="baseAmount" readonly />
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <label class="form-label" for="finalAmount">Final Amount (-15%)</label>
                         <input type="number" class="form-control" id="finalAmount" readonly />
                     </div>
@@ -317,19 +327,61 @@
             </div>
             <div class="section-body">
                 <div class="row g-3 mb-4">
-                    <div class="col-lg-2">
+                    <table class="table items-table">
+                        <thead class="text-center">
+                            <tr>
+                                <th>Min KG</th>
+                                <th>Max KG</th>
+                                <th>Avg KG</th>
+                                <th>Finish Rate</th>
+                                <th>Qty</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="number" class="form-control" id="minKg" placeholder="25" min="0" step="0.1" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" id="maxKg" placeholder="40" min="0" step="0.1" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" id="avgKg" readonly step="0.1" />
+                                </td>
+                                <td>
+                                    <select class="form-select" id="finishType">
+                                        <option value="200">Basic - ₹200/kg</option>
+                                        <option value="250">Standard - ₹250/kg</option>
+                                        <option value="300">Advanced - ₹300/kg</option>
+                                        <option value="350">Texture - ₹350/kg</option>
+                                        <option value="375">Rustic - ₹375/kg</option>
+                                        <option value="500">Matt - ₹500/kg</option>
+                                        <option value="575">Gloss - ₹575/kg</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" id="kgQty" placeholder="1" min="0" step="1" value="1" />
+                                </td>
+                                <td>
+                                    <button type="button" class="btn-add-remove btn-add" id="addKgRow">+ Add</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
                         <label class="form-label" for="minKg">Min KG</label>
                         <input type="number" class="form-control" id="minKg" placeholder="25" min="0" step="0.1" />
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
                         <label class="form-label" for="maxKg">Max KG</label>
                         <input type="number" class="form-control" id="maxKg" placeholder="40" min="0" step="0.1" />
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
                         <label class="form-label" for="avgKg">Avg KG</label>
                         <input type="number" class="form-control" id="avgKg" readonly step="0.1" />
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
                         <label class="form-label" for="finishType">Finish Rate</label>
                         <select class="form-select" id="finishType">
                             <option value="200">Basic - ₹200/kg</option>
@@ -341,15 +393,13 @@
                             <option value="575">Gloss - ₹575/kg</option>
                         </select>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
                         <label class="form-label" for="kgQty">Qty</label>
                         <input type="number" class="form-control" id="kgQty" placeholder="1" min="0" step="1" value="1" />
                     </div>
-                </div>
-                <!-- KG Items Table -->
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="form-label mb-0">Add multiple KG calculations</div>
-                    <button type="button" class="btn-add-remove btn-add" id="addKgRow">+ Add KG</button>
+                    <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
+                        <button type="button" class="btn-add-remove btn-add" id="addKgRow">+ Add KG</button>
+                    </div> -->
                 </div>
                 <div class="table-responsive mb-4">
                     <table class="table items-table" id="kgTable">
@@ -425,35 +475,35 @@
             </div>
             <div class="section-body">
                 <div class="row g-4 mb-4">
-                    <div class="col-lg-6">
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                         <label class="form-label" for="totalCostInput">Your Total Cost (₹)</label>
                         <input type="number" class="form-control" id="totalCostInput" placeholder="Auto: Selling - Base Amount" readonly />
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                         <label class="form-label" for="discountInput">Additional Discount (₹)</label>
                         <input type="number" class="form-control discount-field" id="discountInput" placeholder="Enter Discount value in (₹)" min="0" step="0.1" value="0" />
                     </div>
                 </div>
                 <div class="row g-3 profit-metrics">
-                    <div class="col-lg-3">
+                    <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
                         <div class="profit-field">
                             <label class="form-label" for="showBaseTotal">Base Amount Total</label>
                             <input type="number" class="form-control" id="showBaseTotal" readonly />
                         </div>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
                         <div class="profit-field">
                             <label class="form-label" for="showTotalSell">Total Selling</label>
                             <input type="number" class="form-control" id="showTotalSell" readonly />
                         </div>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
                         <div class="profit-field" id="profitField">
                             <label class="form-label" for="discountedPrice">Discounted Price</label>
                             <input type="number" class="form-control" id="discountedPrice" readonly />
                         </div>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
                         <div class="profit-field" id="percentField">
                             <label class="form-label" for="profitAmount">Profit/Loss (₹)</label>
                             <input type="number" class="form-control" id="profitAmount" readonly />
@@ -461,7 +511,7 @@
                     </div>
                 </div>
                 <div class="row g-3 profit-metrics mt-3">
-                    <div class="col-12 text-center">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 text-center">
                         <label class="form-label" for="profitPercent">Profit/Loss (%)</label>
                         <input type="text" class="form-control" id="profitPercent" readonly style="font-size: 1.5rem; font-weight: 900;" />
                     </div>
@@ -480,15 +530,15 @@
             </div>
             <div class="section-body">
                 <div class="row g-3 mb-3">
-                    <div class="col-lg-4">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <label class="form-label" for="partyName">Party Name</label>
                         <input type="text" class="form-control" id="partyName" placeholder="Enter party / customer name" />
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <label class="form-label" for="recordDate">Date</label>
                         <input type="date" class="form-control" id="recordDate" />
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <label class="form-label" for="recordTime">Time</label>
                         <input type="time" class="form-control" id="recordTime" />
                     </div>
@@ -496,7 +546,6 @@
                 <button type="button" class="btn-add-remove btn-add" id="exportCsvBtn">⬇ Download CSV</button>
             </div>
         </div>
-
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
