@@ -566,7 +566,7 @@
             <div class="section-header">
                 <div>
                     <h3 class="section-title">Rate Calculator</h3>
-                    <div class="section-subtitle">Rate → Base (+10%) → Final (-15%)</div>
+                    <div class="section-subtitle">Rate → Base (+12%) → Final (-25%)</div>
                 </div>
                 <span class="section-badge">✅ PERFECT</span>
             </div>
@@ -710,7 +710,7 @@
                 </div>
                 <div class="profit-metrics">
                     <div class="row">
-                        <div class="col-4 col-md-4 col-xxl-4">
+                        <div class="col-6 col-md-6 col-xxl-6">
                             <div class="row g-3">
                                 <div class="col-12 col-md-12 col-lg-12">
                                     <div class="profit-field">
@@ -742,9 +742,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-8 col-md-8 col-xxl-8" style="position: relative;">
-                            <canvas id="profitChart" width="300" height="300" style="max-width: 100%; height: auto; border-radius: 16px"></canvas>
-                            <div id="chartCenter" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--text-main); font-weight: 800; font-size: 1.2rem; pointer-events: none;">
+                        <div class="col-6 col-md-6 col-xxl-6" style="position: relative;">
+                            <canvas id="profitChart" width="360" height="360" style="max-width: 100%; height: auto; border-radius: 16px"></canvas>
+                            <div id="chartCenter" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--text-main); font-weight: 800; font-size: 1.2rem">
                                 <br/>
 
                                 <!-- Under the chartCenter div, add this legend -->
@@ -760,10 +760,10 @@
                                     </span>
                                 </div>
 
-                                <br/>
+                                <hr/>
                                 <div>
                                     <span id="profitCenterValue">₹0</span>
-                                    |
+                                    /
                                     <span id="profitCenterPercent">0%</span>
                                 </div>
                             </div>
@@ -865,29 +865,29 @@
             
             const ctx = canvas.getContext('2d');
             profitChart = new Chart(ctx, {
-                type: 'doughnut',
+                type: 'pie',
                 data: {
                     datasets: [{
                         data: [50, 50],
                         backgroundColor: ['rgba(248,113,113,0.8)', 'rgba(52,211,153,0.8)'],
                         borderColor: ['rgba(248,113,113,1)', 'rgba(52,211,153,1)'],
-                        borderWidth: 3,
-                        circumference: 180,
+                        borderWidth: 5,
+                        circumference: 360,
                         rotation: 270
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '75%',
+                    cutout: '70%',
                     animation: {
                         animateRotate: true,
                         duration: 1200,
                         easing: 'easeOutQuart'
                     },
                     plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
+                        legend: { display: true },
+                        tooltip: { enabled: true }
                     }
                 }
             });
@@ -912,7 +912,7 @@
             
             profitChart.options.animation = {
                 animateRotate: true,
-                duration: 800,
+                duration: 500,
                 easing: 'easeOutBack'
             };
             
@@ -926,7 +926,7 @@
             });
             $centerPercent.text(percent.toFixed(1) + '%').css({
                 color: isPositive ? 'var(--success)' : 'var(--danger)',
-                fontSize: '0.9rem'
+                fontSize: '1rem'
             });
         }
 
@@ -977,8 +977,24 @@
         $('#rate').on('input', function() {
             let rate = parseFloat(this.value) || 0;
             if (rate < 0) rate = 0;
+            
+            /* // Old logic: +10% then -15%
             let base = rate * 1.1;
-            let final = base * 0.85;
+            let final = base * 0.85; */
+
+            /* // New logic: +12% then -25%
+            let base = rate * 1.12;      // Add 12%
+            let final = base * 0.75;    */
+
+            // Step-1: Add 12%
+            let base = rate * 1.25856;
+
+            // Step-2: minus 25%
+            let semi = base * 0.73915;
+
+            // Step-3: add 5%
+            let final = semi * 1.12345;
+
             $('#baseAmount').val(base.toFixed(2));
             $('#finalAmount').val(final.toFixed(2));
         });
