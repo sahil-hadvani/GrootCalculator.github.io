@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FRP Shapes Calculator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --bg-light: #f8fafc;
+      --bg-card-light: #ffffff;
+      --text-light: #1e293b;
+      --text-muted-light: #64748b;
+      --border-light: #e2e8f0;
+      --shadow-light: 0 20px 25px -5px rgba(0, 0,0, 0.1);
+      --screenshot-bg: #f8fafc;
+    }
+
+    [data-theme="dark"] {
+      --bg-light: #0f172a;
+      --bg-card-light: #1e293b;
+      --text-light: #f8fafc;
+      --text-muted-light: #cbd5e1;
+      --border-light: #334155;
+      --shadow-light: 0 20px 25px -5px rgba(0, 0,0, 0.4);
+      --screenshot-bg: #0f172a;
+    }
+
+    * { font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: var(--bg-light);
+      min-height: 100vh;
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
+
+    .glass-effect { 
+      background: rgba(255,255,255,0.1); 
+      backdrop-filter: blur(10px); 
+      border: 1px solid rgba(255,255,255,0.18); 
+    }
+
+    .card { 
+      border-radius: 24px; 
+      border: none; 
+      box-shadow: var(--shadow-light); 
+      transition: all 0.3s ease; 
+      overflow: hidden; 
+    }
+    
+    .card:hover { transform: translateY(-5px); }
+
+    .btn-primary-custom {
+      background: var(--primary-gradient); 
+      border: none; 
+      border-radius: 16px; 
+      padding: 12px 32px;
+      font-weight: 600; 
+      transition: all 0.3s ease; 
+      box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+      color: white !important;
+    }
+    
+    .btn-primary-custom:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 12px 35px rgba(102,126,234,0.6); 
+    }
+
+    .btn-screenshot { 
+      background: var(--secondary-gradient); 
+      border: none; 
+      border-radius: 50%; 
+      width: 50px; 
+      height: 50px;
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      box-shadow: 0 8px 25px rgba(245,87,108,0.4);
+      transition: all 0.3s ease;
+      color: white !important;
+    }
+    
+    .btn-screenshot:hover { 
+      transform: scale(1.1) rotate(5deg); 
+      box-shadow: 0 12px 35px rgba(245,87,108,0.6); 
+    }
+
+    .input-group-custom {
+      background: rgba(255,255,255,0.1); 
+      border-radius: 16px; 
+      border: 2px solid transparent;
+      transition: all 0.3s ease; 
+      backdrop-filter: blur(10px);
+    }
+    
+    .input-group-custom:focus-within { 
+      border-color: #667eea; 
+      box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25); 
+    }
+
+    .form-control { 
+      background: transparent; 
+      border: none; 
+      color: inherit; 
+      font-size: 16px; 
+    }
+
+    .form-control::placeholder {
+      color: var(--text-muted-light);
+    }
+    
+    .form-control:focus { 
+      background: transparent; 
+      box-shadow: none; 
+      color: inherit; 
+    }
+
+    .shape-card {
+      background: rgba(255,255,255,0.1); 
+      backdrop-filter: blur(10px); 
+      border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.2); 
+      cursor: pointer; 
+      transition: all 0.3s ease;
+      height: 120px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      flex-direction: column;
+      color: inherit;
+    }
+    
+    .shape-card:hover, .shape-card.active { 
+      background: var(--primary-gradient) !important; 
+      transform: scale(1.05); 
+      border-color: transparent;
+      box-shadow: 0 20px 40px rgba(102,126,234,0.4);
+      color: white !important;
+    }
+    
+    .shape-card i { 
+      font-size: 2.5rem; 
+      margin-bottom: 8px; 
+      opacity: 0.9; 
+    }
+
+    .result-box { 
+      background: rgba(255,255,255,0.1); 
+      backdrop-filter: blur(20px); 
+      border-radius: 20px; 
+      border: 1px solid rgba(255,255,255,0.2); 
+    }
+
+    .theme-toggle {
+      position: fixed; 
+      top: 20px; 
+      right: 20px; 
+      z-index: 1000; 
+      width: 60px; 
+      height: 60px; 
+      border-radius: 50%;
+      border: none; 
+      background: var(--primary-gradient); 
+      color: white; 
+      font-size: 20px;
+      box-shadow: 0 8px 25px rgba(102,126,234,0.4); 
+      transition: all 0.3s ease;
+    }
+    
+    .theme-toggle:hover { 
+      transform: scale(1.1) rotate(180deg); 
+    }
+
+    .floating-label { position: relative; }
+    .floating-label label {
+      position: absolute; 
+      top: -10px; 
+      left: 15px; 
+      background: rgba(255,255,255,0.9);
+      padding: 0 10px; 
+      border-radius: 10px; 
+      font-size: 12px; 
+      font-weight: 600; 
+      color: var(--text-muted-light);
+      z-index: 1;
+    }
+    
+    [data-theme="dark"] .floating-label label { 
+      background: rgba(30,41,59,0.9); 
+    }
+
+    .metric-card {
+      border-radius: 20px; 
+      padding: 24px 20px; 
+      text-align: center; 
+      color: white;
+      transition: all 0.4s ease; 
+      position: relative; 
+      overflow: hidden;
+    }
+    
+    .metric-card:hover { 
+      transform: scale(1.08) translateY(-8px); 
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3) !important; 
+    }
+    
+    .metric-card .h2 { 
+      font-size: 2.2rem !important; 
+      font-weight: 700 !important; 
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5); 
+      margin-bottom: 8px !important; 
+    }
+    
+    .metric-card .label { 
+      font-size: 0.85rem; 
+      font-weight: 600; 
+      text-shadow: 0 1px 5px rgba(0,0,0,0.4); 
+      margin-bottom: 4px; 
+    }
+    
+    .metric-card .unit { 
+      font-size: 0.75rem; 
+      opacity: 0.9; 
+      font-weight: 500; 
+    }
+
+    .metric-card.area-card { 
+      background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #581c87 100%); 
+    }
+    .metric-card.minwt-card { 
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 50%, #047857 100%); 
+    }
+    .metric-card.maxwt-card { 
+      background: linear-gradient(135deg, #c2410c 0%, #dc2626 50%, #b91c1c 100%); 
+    }
+    .metric-card.avgwt-card { 
+      background: linear-gradient(135deg, #7c3aed 0%, #9333ea 50%, #a855f7 100%); 
+    }
+    .metric-card.price-card { 
+      background: linear-gradient(135deg, #d97706 0%, #b45309 50%, #92400e 100%); 
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 20px 15px; }
+      .metric-card .h2 { font-size: 1.8rem !important; }
+      .shape-card { height: 100px; margin-bottom: 10px; }
+    }
+
+    .particles { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      pointer-events: none; 
+      z-index: -1; 
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100px); opacity: 0; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </button>
+
+  <!-- Particles -->
+  <div class="particles" id="particles"></div>
+
+  <div class="container py-5 screenshot-area">
+    <div class="text-center mb-5">
+      <h1 class="display-4 fw-bold mb-3" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+        FRP Shapes Calculator
+      </h1>
+      <p class="lead text-muted">Curved • Round • Olive • Oval | Auto-calculates instantly!</p>
+    </div>
+
+    <!-- Shape Selector -->
+    <div class="row mb-5 justify-content-center">
+      <div class="col-md-2 col-sm-6 mb-3">
+        <div class="shape-card active" data-shape="curved">
+          <i class="fas fa-gem"></i>
+          <div class="fw-bold small">Curved</div>
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-6 mb-3">
+        <div class="shape-card" data-shape="round">
+          <i class="fas fa-circle"></i>
+          <div class="fw-bold small">Round</div>
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-6 mb-3">
+        <div class="shape-card" data-shape="olive">
+          <i class="fas fa-seedling"></i>
+          <div class="fw-bold small">Olive</div>
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-6 mb-3">
+        <div class="shape-card" data-shape="oval">
+          <i class="fas fa-egg"></i>
+          <div class="fw-bold small">Oval</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calculator Card -->
+    <div class="card glass-effect mb-4">
+      <div class="card-body p-5">
+        <div class="row g-4">
+          <!-- A: Upper Outer Diameter (REQUIRED) -->
+          <div class="col-md-6">
+            <div class="floating-label">
+              <label><i class="fas fa-circle me-1"></i>A: Upper Outer Dia</label>
+              <div class="input-group input-group-custom">
+                <span class="input-group-text bg-transparent border-0 px-3"><i class="fas fa-circle"></i></span>
+                <input type="number" id="A" class="form-control" placeholder="Enter A (inches)">
+              </div>
+            </div>
+          </div>
+
+          <!-- B: Lower Outer Diameter (REQUIRED) -->
+          <div class="col-md-6">
+            <div class="floating-label">
+              <label><i class="fas fa-circle-notch me-1"></i>B: Lower Outer Dia</label>
+              <div class="input-group input-group-custom">
+                <span class="input-group-text bg-transparent border-0 px-3"><i class="fas fa-circle-notch"></i></span>
+                <input type="number" id="B" class="form-control" placeholder="Enter B (inches)">
+              </div>
+            </div>
+          </div>
+
+          <!-- C: Inner Dia Greater (OPTIONAL) -->
+          <div class="col-md-4">
+            <div class="floating-label">
+              <label><i class="fas fa-circle-plus me-1"></i>C: Inner Dia >A,B</label>
+              <div class="input-group input-group-custom">
+                <span class="input-group-text bg-transparent border-0 px-3"><i class="fas fa-circle-plus"></i></span>
+                <input type="number" id="C" class="form-control" placeholder="Optional">
+              </div>
+            </div>
+          </div>
+
+          <!-- D: Inner Dia Lesser (OPTIONAL) -->
+          <div class="col-md-4">
+            <div class="floating-label">
+              <label><i class="fas fa-circle-minus me-1"></i>D: Inner Dia <A,B</label>
+              <div class="input-group input-group-custom">
+                <span class="input-group-text bg-transparent border-0 px-3"><i class="fas fa-circle-minus"></i></span>
+                <input type="number" id="D" class="form-control" placeholder="Optional">
+              </div>
+            </div>
+          </div>
+
+          <!-- H: Height (REQUIRED) -->
+          <div class="col-md-4">
+            <div class="floating-label">
+              <label><i class="fas fa-ruler-vertical me-1"></i>H: Height</label>
+              <div class="input-group input-group-custom">
+                <span class="input-group-text bg-transparent border-0 px-3"><i class="fas fa-ruler-vertical"></i></span>
+                <input type="number" id="H" class="form-control" placeholder="Enter H (inches)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Fixed Parameters Display -->
+          <div class="col-12">
+            <div class="row text-center g-3">
+              <div class="col-md-4">
+                <div class="p-3 rounded bg-success bg-opacity-10 border border-success">
+                  <i class="fas fa-vector-square fa-2x text-success mb-2 d-block"></i>
+                  <div class="h6 mb-1">Base Area</div>
+                  <div class="fw-bold fs-5 text-success">1440 sq.in</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-3 rounded bg-info bg-opacity-10 border border-info">
+                  <i class="fas fa-weight fa-2x text-info mb-2 d-block"></i>
+                  <div class="h6 mb-1">Weight Range</div>
+                  <div class="fw-bold fs-5 text-info">4-6 kg</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-3 rounded bg-warning bg-opacity-10 border border-warning">
+                  <i class="fas fa-rupee-sign fa-2x text-warning mb-2 d-block"></i>
+                  <div class="h6 mb-1">Price/kg</div>
+                  <div class="fw-bold fs-5 text-warning">₹1837</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calculate Button -->
+          <div class="col-12 text-center pt-3">
+            <button class="btn btn-primary-custom btn-lg px-5" id="calcBtn">
+              <i class="fas fa-calculator me-2"></i>Calculate Now
+            </button>
+            <div class="mt-3 small text-muted">
+              <i class="fas fa-info-circle me-1"></i>A, B, H required | C, D optional
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="result-box p-5 d-none" id="result">
+      <div class="text-center mb-5">
+        <h3 class="mb-2"><i class="fas fa-chart-line me-2 text-success"></i>Calculation Results</h3>
+        <button class="btn btn-screenshot me-2" id="shareBtn" title="Download Screenshot">
+          <i class="fas fa-camera"></i>
+        </button>
+        <button class="btn btn-outline-light btn-sm" onclick="window.print()">
+          <i class="fas fa-print me-1"></i>Print
+        </button>
+      </div>
+      
+      <div class="row g-4">
+        <div class="col-md-2 col-sm-6">
+          <div class="metric-card area-card h-100">
+            <div class="h2 mb-2" id="areaRes">0</div>
+            <div class="label">Parting Area</div>
+            <div class="unit">sq.in</div>
+          </div>
+        </div>
+        <div class="col-md-2 col-sm-6">
+          <div class="metric-card minwt-card h-100">
+            <div class="h2 mb-2" id="minWtRes">0</div>
+            <div class="label">Min Weight</div>
+            <div class="unit">kg</div>
+          </div>
+        </div>
+        <div class="col-md-2 col-sm-6">
+          <div class="metric-card maxwt-card h-100">
+            <div class="h2 mb-2" id="maxWtRes">0</div>
+            <div class="label">Max Weight</div>
+            <div class="unit">kg</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="metric-card avgwt-card h-100">
+            <div class="h2 mb-2" id="avgWtRes">0</div>
+            <div class="label fw-bold">Avg Weight</div>
+            <div class="unit">kg</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="metric-card price-card h-100">
+            <div class="h2 mb-2" id="priceRes">₹0</div>
+            <div class="label fw-bold">Estimated Price</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // FIXED CONSTANTS
+    const FIXED_VALUES = {
+      baseArea: 1440,
+      minWt: 4,
+      maxWt: 6,
+      rate: 1837
+    };
+
+    // SHAPE FORMULAS
+    const SHAPE_FORMULAS = {
+      curved: (A, B, C, D, H) => {
+        const avgOuter = (A + B) / 2;
+        const innerFactor = (C || avgOuter * 1.2) + (D || avgOuter * 0.8);
+        return ((avgOuter * H) * 3.5) + (Math.PI * avgOuter * 2.2) + (innerFactor * H * 1.8);
+      },
+      round: (A, B, C, D, H) => {
+        const dia = A === B ? A : (A + B) / 2;
+        const innerDia = Math.max(C || 0, D || 0);
+        return (Math.PI * dia * H * 2.8) + (Math.PI * dia * 1.5) + (innerDia ? Math.PI * innerDia * H * 1.2 : 0);
+      },
+      olive: (A, B, C, D, H) => {
+        const taperFactor = Math.abs(A - B) / Math.max(A, B);
+        const innerAvg = ((C || A * 1.1) + (D || B * 0.9)) / 2;
+        return ((A * H * 2) + (B * H * 2) + (Math.PI * ((A + B)/2) * 2.5)) + (innerAvg * H * 1.5 * taperFactor);
+      },
+      oval: (A, B, C, D, H) => {
+        const longAxis = Math.max(A, B);
+        const shortAxis = Math.min(A, B);
+        const innerLong = Math.max(C || 0, D || 0);
+        return ((longAxis * shortAxis * 3.2) + (longAxis * H * 2.1) + (shortAxis * H * 1.8)) + (innerLong * H * 1.4);
+      }
+    };
+
+    // DOM Elements
+    const elements = {
+      A: document.getElementById('A'),
+      B: document.getElementById('B'),
+      C: document.getElementById('C'),
+      D: document.getElementById('D'),
+      H: document.getElementById('H'),
+      shapeCards: document.querySelectorAll('.shape-card'),
+      result: document.getElementById('result'),
+      areaRes: document.getElementById('areaRes'),
+      minWtRes: document.getElementById('minWtRes'),
+      maxWtRes: document.getElementById('maxWtRes'),
+      avgWtRes: document.getElementById('avgWtRes'),
+      priceRes: document.getElementById('priceRes'),
+      calcBtn: document.getElementById('calcBtn'),
+      shareBtn: document.getElementById('shareBtn'),
+      themeToggle: document.getElementById('themeToggle'),
+      particles: document.getElementById('particles')
+    };
+
+    let currentShape = 'curved';
+
+    // Theme Toggle
+    elements.themeToggle.addEventListener('click', function() {
+      const body = document.body;
+      const icon = this.querySelector('i');
+      const isDark = body.getAttribute('data-theme') === 'dark';
+      
+      body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    });
+
+    // Shape Selection
+    elements.shapeCards.forEach(card => {
+      card.addEventListener('click', function() {
+        elements.shapeCards.forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        currentShape = this.dataset.shape;
+        calculate();
+      });
+    });
+
+    // Main Calculation Function
+    function calculate() {
+      const A = parseFloat(elements.A.value) || 0;
+      const B = parseFloat(elements.B.value) || 0;
+      const C = parseFloat(elements.C.value) || 0;
+      const D = parseFloat(elements.D.value) || 0;
+      const H = parseFloat(elements.H.value) || 0;
+
+      // Validation
+      if (!A || !B || !H) {
+        elements.result.classList.add('d-none');
+        return;
+      }
+
+      const partArea = SHAPE_FORMULAS[currentShape](A, B, C, D, H);
+      const ratio = partArea / FIXED_VALUES.baseArea;
+      const newMinWt = (FIXED_VALUES.minWt * ratio).toFixed(2);
+      const newMaxWt = (FIXED_VALUES.maxWt * ratio).toFixed(2);
+      const avgWt = ((parseFloat(newMinWt) + parseFloat(newMaxWt)) / 2).toFixed(2);
+      const price = (parseFloat(avgWt) * FIXED_VALUES.rate).toFixed(0);
+
+      // Update Results
+      elements.areaRes.textContent = partArea.toFixed(2);
+      elements.minWtRes.textContent = newMinWt;
+      elements.maxWtRes.textContent = newMaxWt;
+      elements.avgWtRes.textContent = avgWt;
+      elements.priceRes.textContent = '₹' + price;
+
+      // Show Results
+      elements.result.classList.remove('d-none');
+    }
+
+    // Event Listeners
+    elements.A.addEventListener('input', calculate);
+    elements.B.addEventListener('input', calculate);
+    elements.C.addEventListener('input', calculate);
+    elements.D.addEventListener('input', calculate);
+    elements.H.addEventListener('input', calculate);
+    elements.calcBtn.addEventListener('click', calculate);
+
+    // Screenshot
+    elements.shareBtn.addEventListener('click', function() {
+      elements.themeToggle.style.display = 'none';
+      elements.particles.style.display = 'none';
+      
+      html2canvas(document.querySelector('.screenshot-area'), {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--screenshot-bg').trim(),
+        allowTaint: true
+      }).then(canvas => {
+        elements.themeToggle.style.display = '';
+        elements.particles.style.display = '';
+        
+        const link = document.createElement('a');
+        link.download = `FRP_${currentShape.toUpperCase()}_Calc_${new Date().toISOString().slice(0,10)}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }).catch(err => {
+        elements.themeToggle.style.display = '';
+        elements.particles.style.display = '';
+        console.error('Screenshot failed:', err);
+      });
+    });
+
+    // Particles Effect
+    const colors = ['#667eea', '#764ba2', '#f5576c', '#00f2fe'];
+    setInterval(() => {
+      const particle = document.createElement('div');
+      particle.style.cssText = `
+        position: fixed;
+        width: 6px; height: 6px;
+        background: ${colors[Math.floor(Math.random() * 4)]};
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -1;
+        left: ${Math.random() * 100}vw;
+        animation: float 8s linear infinite;
+        box-shadow: 0 0 10px currentColor;
+      `;
+      elements.particles.appendChild(particle);
+      setTimeout(() => {
+        if (particle.parentNode) {
+          particle.parentNode.removeChild(particle);
+        }
+      }, 8000);
+    }, 250);
+
+    // Load theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.body.setAttribute('data-theme', 'dark');
+      elements.themeToggle.querySelector('i').className = 'fas fa-sun';
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
