@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Premium Box Calculator</title>
+<title>Quadro Box Calculator</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -89,7 +89,7 @@ body{
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-7">
+        <div class="col-lg-12">
             <div class="glass-card">
 
                 <h2 class="text-center mb-4">✨ Box Price & Weight Calculator</h2>
@@ -125,6 +125,24 @@ body{
                 <div class="d-grid mt-4">
                     <button class="btn btn-calc btn-lg" id="calculate">Calculate Now 🚀</button>
                 </div>
+                <hr/>
+                <div class="row g-3">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <a href="index.html" class="btn btn-calc btn-lg w-100">
+                            <i class="fas fa-calculator"></i> P&L Pricing Console
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <a href="New-Quadro.html" class="btn btn-calc btn-lg w-100">
+                            <i class="fas fa-calculator"></i> New Quadro (Over MRP)
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <a href="Reguler.html" class="btn btn-calc btn-lg w-100">
+                            <i class="fas fa-calculator"></i> Reguler (Avg. MRP)
+                        </a>
+                    </div>
+                </div>
 
                 <div class="result-box" id="result">
                     <p>📦 Volume: <span id="volume"></span> cubic inch</p>
@@ -142,7 +160,6 @@ body{
 
 <script>
 $(function(){
-
     $("#calculate").click(function(){
 
         let L = parseFloat($("#length").val());
