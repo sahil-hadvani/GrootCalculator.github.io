@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LBH Planter Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1f2937;
+      padding: 20px;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      background: #0f766e;
+      color: #fff;
+      padding: 20px;
+    }
+
+    .header h1 {
+      margin: 0 0 6px;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 0;
+      opacity: 0.92;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 18px;
+      color: #111827;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .field input[type="number"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .field input[type="number"]:focus {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 3px rgba(15,118,110,0.12);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .toggle-row .left {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .toggle-row .left strong {
+      font-size: 14px;
+    }
+
+    .toggle-row .left span {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .switch {
+      position: relative;
+      width: 54px;
+      height: 30px;
+      display: inline-block;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #cbd5e1;
+      border-radius: 999px;
+      transition: 0.25s;
+      cursor: pointer;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 4px;
+      top: 4px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.25s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .switch input:checked + .slider {
+      background: #0f766e;
+    }
+
+    .switch input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+
+    .note {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    #results {
+      display: none;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .result-box {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .result-box .label {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .result-box .value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .result-box.price .value {
+      color: #0f766e;
+    }
+
+    .formula-box {
+      margin-top: 16px;
+      background: #fff;
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .formula-box p {
+      margin: 0 0 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #374151;
+      word-break: break-word;
+    }
+
+    .formula-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .status {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      background: #ecfeff;
+      color: #155e75;
+      border: 1px solid #a5f3fc;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="header">
+        <h1>LBH Planter Calculator</h1>
+        <p>Auto calculation on typing • Rounded to 2 decimals • Updated working logic</p>
+      </div>
+
+      <div class="content">
+        <div class="panel">
+          <h2>Inputs</h2>
+
+          <div class="field">
+            <label for="length">L (Length in inches) *</label>
+            <input type="number" id="length" min="0" step="any" placeholder="Enter length" />
+          </div>
+
+          <div class="field">
+            <label for="breadth">B (Breadth in inches) *</label>
+            <input type="number" id="breadth" min="0" step="any" placeholder="Enter breadth" />
+          </div>
+
+          <div class="field">
+            <label for="height">H (Height in inches) *</label>
+            <input type="number" id="height" min="0" step="any" placeholder="Enter height" />
+          </div>
+
+          <div class="field">
+            <label>Depth (Optional)</label>
+            <div class="toggle-row">
+              <div class="left">
+                <strong id="depthText">No</strong>
+                <span>Default value is No</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="depth" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="note">
+              Extra 10% price only when Depth = Yes and Height is more than 36 inches.
+            </div>
+          </div>
+
+          <div class="muted">
+            Required fields: L, B, H<br />
+            Optional field: Depth
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Results</h2>
+
+          <div id="emptyState" class="muted">
+            Enter Length, Breadth, and Height to see calculation results.
+          </div>
+
+          <div id="results">
+            <div class="result-grid">
+              <div class="result-box">
+                <div class="label">LBH Part area</div>
+                <div class="value" id="partArea">0.00</div>
+              </div>
+
+              <div class="result-box">
+                <div class="label">Min weight</div>
+                <div class="value" id="minWeight">0.00</div>
+              </div>
+
+              <div class="result-box">
+                <div class="label">Max weight</div>
+                <div class="value" id="maxWeight">0.00</div>
+              </div>
+
+              <div class="result-box">
+                <div class="label">Avg. weight</div>
+                <div class="value" id="avgWeight">0.00</div>
+              </div>
+
+              <div class="result-box price" style="grid-column: 1 / -1;">
+                <div class="label">Price / MRP</div>
+                <div class="value" id="price">0.00</div>
+              </div>
+            </div>
+
+            <div class="formula-box">
+              <p id="conversionLine"></p>
+              <p id="areaLine"></p>
+              <p id="minLine"></p>
+              <p id="maxLine"></p>
+              <p id="avgLine"></p>
+              <p id="priceLine"></p>
+            </div>
+
+            <div id="statusBox" class="status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const lengthInput = document.getElementById('length');
+    const breadthInput = document.getElementById('breadth');
+    const heightInput = document.getElementById('height');
+    const depthInput = document.getElementById('depth');
+    const depthText = document.getElementById('depthText');
+
+    const emptyState = document.getElementById('emptyState');
+    const results = document.getElementById('results');
+
+    function round2(value) {
+      return Number(value).toFixed(2);
+    }
+
+    function validNumber(value) {
+      return value !== '' && !isNaN(value) && Number(value) > 0;
+    }
+
+    function calculatePlanter() {
+      const l = parseFloat(lengthInput.value);
+      const b = parseFloat(breadthInput.value);
+      const h = parseFloat(heightInput.value);
+      const depthYes = depthInput.checked;
+
+      depthText.textContent = depthYes ? 'Yes' : 'No';
+
+      if (!validNumber(lengthInput.value) || !validNumber(breadthInput.value) || !validNumber(heightInput.value)) {
+        results.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      const lf = l / 12;
+      const bf = b / 12;
+      const hf = h / 12;
+
+      const volumeFeet = lf * bf * hf;
+      const area = volumeFeet * 28.93;
+
+      let minWeight = area * 0.0525;
+      let maxWeight = minWeight + 2.5;
+      let avgWeight = (minWeight + maxWeight) / 2;
+      let price = area * 93.75;
+
+      const notes = [];
+
+      if (h > b) {
+        minWeight *= 1.10;
+        maxWeight *= 1.10;
+        avgWeight *= 1.10;
+        price *= 1.10;
+        notes.push('Height is greater than Breadth, so 10% added to price and weights.');
+      }
+
+      if (depthYes && h > 36) {
+        price *= 1.10;
+        notes.push('Depth is Yes and Height is more than 36 inches, so extra 10% added to price.');
+      } else if (depthYes && h <= 36) {
+        notes.push('Depth is Yes, but Height is not more than 36 inches, so no extra depth price added.');
+      } else {
+        notes.push('Depth is No, so no extra depth price added.');
+      }
+
+      document.getElementById('partArea').textContent = round2(area);
+      document.getElementById('minWeight').textContent = round2(minWeight);
+      document.getElementById('maxWeight').textContent = round2(maxWeight);
+      document.getElementById('avgWeight').textContent = round2(avgWeight);
+      document.getElementById('price').textContent = round2(price);
+
+      document.getElementById('conversionLine').innerHTML =
+        '<strong>Feet conversion:</strong> ' + round2(l) + ' / 12 = ' + round2(lf) +
+        ', ' + round2(b) + ' / 12 = ' + round2(bf) +
+        ', ' + round2(h) + ' / 12 = ' + round2(hf);
+
+      document.getElementById('areaLine').innerHTML =
+        '<strong>LBH Part area:</strong> ' + round2(lf) + ' × ' + round2(bf) + ' × ' + round2(hf) +
+        ' = ' + round2(volumeFeet) + ' × 28.93 = ' + round2(area);
+
+      document.getElementById('minLine').innerHTML =
+        '<strong>Min weight:</strong> ' + round2(area) + ' × 5.25% = ' + round2(minWeight / (h > b ? 1.10 : 1));
+
+      document.getElementById('maxLine').innerHTML =
+        '<strong>Max weight:</strong> Base min weight + 2.5 = ' +
+        round2((area * 0.0525) + 2.5) +
+        (h > b ? ' → after 10% rule = ' + round2(maxWeight) : '');
+
+      document.getElementById('avgLine').innerHTML =
+        '<strong>Avg. weight:</strong> (' + round2(minWeight) + ' + ' + round2(maxWeight) + ') / 2 = ' + round2(avgWeight);
+
+      let basePrice = area * 93.75;
+      let reversePrice = h > b ? basePrice * 1.10 : basePrice;
+      document.getElementById('priceLine').innerHTML =
+        '<strong>Price / MRP:</strong> ' + round2(area) + ' × 93.75 = ' + round2(basePrice) +
+        (h > b ? ' → +10% = ' + round2(reversePrice) : '') +
+        (depthYes && h > 36 ? ' → +10% depth = ' + round2(price) : '');
+
+      document.getElementById('statusBox').innerHTML = notes.join('<br>');
+
+      emptyState.style.display = 'none';
+      results.style.display = 'block';
+    }
+
+    lengthInput.addEventListener('input', calculatePlanter);
+    breadthInput.addEventListener('input', calculatePlanter);
+    heightInput.addEventListener('input', calculatePlanter);
+    depthInput.addEventListener('change', calculatePlanter);
+
+    calculatePlanter();
+  </script>
+</body>
+</html>
